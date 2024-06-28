@@ -14,17 +14,17 @@
         <label for="">Nombre:</label>
         <input type="text" id="nombreProducto" placeholder="Laptop">
         <label for="">Categoria:</label>
-        <input type="text" id="categoriaProducto" placeholder="Laptop">
+        <input type="text" id="categoriaProducto" placeholder="Electronica">
         <label for="">Precio:</label>
-        <input type="number" id="precioProducto" placeholder="Laptop">
+        <input type="number" id="precioProducto" placeholder="1000">
         <label for="">Cantidad:</label>
-        <input type="number" id="cantidadProducto" placeholder="Laptop">
+        <input type="number" id="cantidadProducto" placeholder="10">
         <label for="">Codigo:</label>
-        <input type="text" id="codigoProducto" placeholder="Laptop">
-        <button type="submit">Agregar</button>
+        <input type="text" id="codigoProducto" placeholder="P001">
+        <button id="buttonAgregar">Agregar</button>
     </form>
 
-    <table id="itemTable">
+    <table id="tablaProductos">
         <thead>
             <tr>
                 <th>Nombre</th>
@@ -36,40 +36,8 @@
                 <th>Calcular Valor Total</th>
             </tr>
         </thead>
-        <tbody>
-            <!--
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                    <button>Edit</button>
-                    <button>Delete</button>
-                </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                    <button>Calcular Valor Total</button>
-                </td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            -->
+        <tbody id="elementosTabla">
+
         </tbody>
     </table>
 
