@@ -58,11 +58,11 @@ function mostrarProductos() {
         });
 
         let botonActualizarCantidad = document.createElement("button")
-        botonActualizarCantidad .textContent="Actualizar Cantidad"
+        botonActualizarCantidad.textContent="Modificar Cantidad"
 
         //Mostrar input de actualizar
         botonActualizarCantidad.addEventListener('click',function(){
-            mostrarInputActualizar(producto)
+            //-----//
         })
         
         // Crear fila para cada producto
@@ -82,13 +82,6 @@ function mostrarProductos() {
         acciones.appendChild(botonEliminar);
         acciones.appendChild(botonActualizarCantidad);
         tabla.appendChild(filaProducto);
-
-        //FUNCION MOSTRAR FORMULARIO DE ACTUALIZAR
-        function mostrarInputActualizar(){
-            let inputNuevaCantidad = document.createElement("input")
-            inputNuevaCantidad.id="codigo"
-            acciones.appendChild(inputNuevaCantidad);     
-        }
     }
 
     // Crear fila para el botón "Calcular Valor Total"
@@ -154,15 +147,16 @@ function eliminarProducto(codigo) {
     mostrarProductos();
 }
 
-/*ACTUALIZAR CANTIDAD DE PRODUCTO
+//ACTUALIZAR CANTIDAD DE PRODUCTO
 function actualizarCantidadProducto(codigo, cantNueva){
     let producto = inventario.find(elemento => elemento.codigo==codigo)
     if(producto){
         producto.cantidad=cantNueva
+        mostrarProductos()
     }else{
         console.log("NO se encontro el producto")
     }
-}*/
+}
 
 // Mostrar los productos al cargar la página
 document.addEventListener('DOMContentLoaded', mostrarProductos);
