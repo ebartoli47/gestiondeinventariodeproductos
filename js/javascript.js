@@ -40,12 +40,15 @@ let inventario = [
 //----------------------------------------//
 
 let tabla = document.querySelector('#elementosTabla');
+let resultadosDiv = document.querySelector('#resultados');
 let buttonAgregar = document.querySelector('#buttonAgregar')
+let buttonBuscar = document.querySelector('#buscarProducto')
 
 //MOSTRAR PRODUCTOS
 function mostrarProductos() {
 
     tabla.innerHTML = '';
+    let resultado = 0;
 
     for (let producto of inventario) {
 
@@ -59,11 +62,6 @@ function mostrarProductos() {
 
         let botonActualizarCantidad = document.createElement("button")
         botonActualizarCantidad.textContent="Modificar Cantidad"
-
-        //Mostrar input de actualizar
-        botonActualizarCantidad.addEventListener('click',function(){
-            //-----//
-        })
         
         // Crear fila para cada producto
         let filaProducto = document.createElement('tr');
@@ -73,15 +71,56 @@ function mostrarProductos() {
             <td>${producto.precio}</td>
             <td>${producto.cantidad}</td>
             <td>${producto.codigo}</td>
-            <td>
-
-            </td>
+            <td id="botonesacciones"></td>
         `;
+
+        //Calculo resultado
+        resultado = resultado + (producto.precio*producto.cantidad)
 
         let acciones = filaProducto.querySelector('td:last-child')
         acciones.appendChild(botonEliminar);
         acciones.appendChild(botonActualizarCantidad);
         tabla.appendChild(filaProducto);
+
+        //MOSTRAR FORMULARIO DE ACTUALIZAR
+        botonActualizarCantidad.addEventListener('click',function(event){
+
+            codigo = producto.codigo
+
+            let overlay = document.createElement('div');
+            overlay.id = 'overlay';
+        
+            let formulario = document.createElement('div');
+            formulario.id = 'formulario';
+            formulario.innerHTML = `
+                <form>
+                    <label for="">Ingrese Nueva Cantidad:</label>
+                    <input type="number" id="nuevaCantidad"><br><br>
+                    <button id="actualizarFormulario">Actualizar</button>
+                    <button type="button" id="cerrarFormulario">Cerrar</button>
+                </form>
+            `;
+        
+            overlay.appendChild(formulario);
+            document.body.appendChild(overlay);
+        
+            overlay.style.visibility = 'visible';
+
+            document.getElementById('actualizarFormulario').addEventListener('click',function(event){
+                //frenar que se actualice la pagina
+                event.preventDefault();
+                let cantNueva = document.querySelector('#nuevaCantidad').value;
+                actualizarCantidadProducto(codigo,cantNueva)
+                overlay.style.visibility = 'hidden';
+                document.body.removeChild(overlay);
+            })
+            
+        
+            document.getElementById('cerrarFormulario').addEventListener('click', function() {
+                overlay.style.visibility = 'hidden';
+                document.body.removeChild(overlay);
+            });
+        })
     }
 
     // Crear fila para el botón "Calcular Valor Total"
@@ -93,25 +132,32 @@ function mostrarProductos() {
         <td></td>
         <td></td>
         <td></td>
-        <td>
-        <button>Calcular Valor Total</button>
+        <td id="cvt">
+        <button id="botonCtv">Calcular Valor Total</button>
         </td>
     `;
     tabla.appendChild(filaCalcularTotal);
 
-    // Crear fila vacía
-    let filaVacia = document.createElement('tr');
-    filaVacia.innerHTML = `
+    //CALCULAR VALOR TOTAL
+    document.getElementById('botonCtv').addEventListener('click', function() {
+
+        let totalTd = document.getElementById('totalValor');
+
+        if(!totalTd){
+            let filaVacia = document.createElement('tr');
+        filaVacia.innerHTML = `
         <td></td>
         <td></td>
         <td></td>
         <td></td>
         <td></td>
         <td></td>
-        <td></td>
-    `;
-    tabla.appendChild(filaVacia);
-    
+        <td id="totalValor">${resultado}</td>
+        `;
+        tabla.appendChild(filaVacia);
+        }
+
+    });
 }
 
 //AGREGAR PRODUCTOS
@@ -127,17 +173,21 @@ let precio = document.querySelector("#precioProducto").value
 let cantidad = document.querySelector("#cantidadProducto").value
 let codigo = document.querySelector("#codigoProducto").value
 
-let nuevoProducto = {
-    nombre: nombre,
-    categoria: categoria,
-    precio: precio,
-    cantidad: cantidad,
-    codigo: codigo
-};
+if(nombre && categoria && precio && cantidad && codigo){
+    let nuevoProducto = {
+        nombre: nombre,
+        categoria: categoria,
+        precio: precio,
+        cantidad: cantidad,
+        codigo: codigo
+    };
+    
+    inventario.push(nuevoProducto);
 
-inventario.push(nuevoProducto);
-
-mostrarProductos();
+    mostrarProductos();
+}else{
+    console.log('No hay datos que ingresar')
+}
 
 }
 
@@ -156,6 +206,53 @@ function actualizarCantidadProducto(codigo, cantNueva){
     }else{
         console.log("NO se encontro el producto")
     }
+}
+
+//BUSCAR POR CATEGORIA
+buttonBuscar.addEventListener('click',function(event){
+    let inputCategoria = document.querySelector('#inputCategoria').value
+    let productosEncontrados = buscarProductoPorCategoria(inputCategoria)
+    // Crear una nueva tabla para mostrar los productos encontrados
+    let nuevaTabla = document.createElement('table');
+    nuevaTabla.id = 'tablaProductos';
+    nuevaTabla.innerHTML = `
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Categoría</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+                <th>Código</th>
+            </tr>
+        </thead>
+        <tbody id="elementosTabla">
+        </tbody>
+    `;
+
+    let tbody = nuevaTabla.querySelector('#elementosTabla');
+
+    for (let producto of productosEncontrados) {
+        let filaProducto = document.createElement('tr');
+        filaProducto.innerHTML = `
+            <td>${producto.nombre}</td>
+            <td>${producto.categoria}</td>
+            <td>${producto.precio}</td>
+            <td>${producto.cantidad}</td>
+            <td>${producto.codigo}</td>
+        `;
+        tbody.appendChild(filaProducto);
+    }
+
+    resultadosDiv.innerHTML = '';
+
+    resultadosDiv.appendChild(nuevaTabla);
+})
+
+function buscarProductoPorCategoria(categoria){
+    if (typeof categoria !== 'string') {
+        console.log('La categoría debe ser una cadena');
+    }
+    return inventario.filter(producto => producto.categoria.toLowerCase() === categoria.toLowerCase());;
 }
 
 // Mostrar los productos al cargar la página
